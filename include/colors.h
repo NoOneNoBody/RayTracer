@@ -35,6 +35,16 @@ public:
         result.fixColor();
         return result;
     }
+    Color operator+=(const Color& col)
+    {
+        (*this) = (*this) + col;
+        return (*this);
+    }
+    Color operator-=(const Color& col)
+    {
+        (*this) = (*this) - col;
+        return (*this);
+    }
     Color operator*(const Color& col) const
     {
         Color result;

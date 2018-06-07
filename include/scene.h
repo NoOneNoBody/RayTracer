@@ -34,11 +34,39 @@ struct Hit
     }
 };
 
-struct Light
+class Light
 {
+public:
+    Light(){}
+    virtual Vector<> getDirection(const Vector<>& pos) const = 0;
+    virtual double getIntensity() const = 0;
+    virtual Color getColor() const = 0;
+};
+
+class DirectionalLight : public Light
+{
+private:
     Vector<> direction;
-    double intencity;
+    double intensity;
     Color color;
+public:
+    DirectionalLight(Vector<> d, double i, Color c): direction(d), intensity(i), color(c){}
+    Vector<> getDirection(const Vector<>& pos) const {return direction;}
+    double getIntensity() const {return intensity;}
+    Color getColor() const {return color;}
+};
+
+class PointLight : public Light
+{
+private:
+    Vector<> position;
+    double intensity;
+    Color color;
+public:
+    PointLight(Vector<> p, double i, Color c): position(p), intensity(i), color(c){}
+    Vector<> getDirection(const Vector<>& pos) const {return ((pos-position).normalize());}
+    double getIntensity() const {return intensity;}
+    Color getColor() const {return color;}
 };
 
 class SceneObject
@@ -110,31 +138,23 @@ class Scene
 {
 private:
     std::vector<const SceneObject*> objects;
-    Light light;
+    std::vector<const Light*> lights;
     Color background;
 public:
-    Scene(Vector<> lDir, double lIntence, Color col): light{lDir, lIntence, col}{}
+    Scene(){}
+    Scene(const std::vector<const Light*>& l): lights(l){}
     Scene(const std::vector<const SceneObject*>& objs): objects(objs){}
+    Scene(const std::vector<const SceneObject*>& objs, const std::vector<const Light*>& l): lights(l), objects(objs){}
     unsigned int getCount() const {return objects.size();}
     void setBackground(Color col){background = col;}
     Color getBackground() const {return background;}
     void addObject(const SceneObject& ob){objects.push_back(&ob);}
+    void addLight(const Light& l){lights.push_back(&l);}
     void pop_backObj(){objects.pop_back();}
-    const SceneObject* operator[](size_t i) const {return objects[i];}
-    const Light& getLight()const {return light;}
-    bool IsLighted(const Vector<>& pos) const
-    {
-        Hit min_t = Hit{INF};
-        for(unsigned int i=0; i < objects.size(); ++i)
-        {
-            const SceneObject* current = objects[i];
-            if(current->CheckIfHits(Ray(pos,-light.direction)))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    const SceneObject* getObject(const size_t& i) const {return objects[i];}
+    size_t getLightCount() const {return lights.size();}
+    const Light& getLight(const size_t& i) const {return (*(lights[i]));}
+    bool isLighted(const Vector<>& pos, const Light& light) const;
     virtual ~Scene(){}
 };
 

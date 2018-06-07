@@ -121,3 +121,17 @@ bool SphereObject::CheckIfHits(const Ray& ray) const
     }
     return (t>MIN && t<INF);
 }
+
+bool Scene::isLighted(const Vector<>& pos, const Light& light) const
+{
+    Hit min_t = Hit{INF};
+    for(unsigned int i=0; i < objects.size(); ++i)
+    {
+        const SceneObject* current = objects[i];
+        if(current->CheckIfHits(Ray(pos,-light.getDirection(pos))))
+        {
+            return false;
+        }
+    }
+    return true;
+}

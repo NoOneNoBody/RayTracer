@@ -32,13 +32,13 @@ BMP::~BMP() {
 
 void BMP::setPixel(uint16_t x, uint16_t y, unsigned char r, unsigned char g,
 		unsigned char b) {
-    if(bitmapCoreHeader.bmpWidth>x&&x>0&&bitmapCoreHeader.bmpHeight>y&&y>0)
+    if(bitmapCoreHeader.bmpWidth>x&&x>=0&&bitmapCoreHeader.bmpHeight>y&&y>=0)
     {
         assert(bitmapCoreHeader.bitsPerPixel == 24);
 
         const size_t rowSize = ((bitmapCoreHeader.bitsPerPixel
                 * bitmapCoreHeader.bmpWidth + 31) / 32) * 4;
-        const size_t offset = rowSize * (bitmapCoreHeader.bmpHeight - y)
+        const size_t offset = rowSize * (bitmapCoreHeader.bmpHeight - (y+1))
                 + x * (bitmapCoreHeader.bitsPerPixel / 8);
 
         pixelData[offset + 0] = b;
