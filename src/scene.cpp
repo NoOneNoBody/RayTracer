@@ -1,18 +1,18 @@
 //Wykonal Michal Warzecha I rok WEAIiB grupa 5b
 #include "scene.h"
 
-Vector<> TriangleFaceObject::CalculateNormal(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const
+Vector<> MeshObject::CalculateNormal(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const
 {
     Vector<> vec1 = v3 - v2;
     Vector<> vec2 = v1 - v2;
     return (vec1 * vec2).normalize();
 }
-bool TriangleFaceObject::CheckSide(const Ray& ray, const Vector<>& t1, const Vector<>& t2) const
+bool MeshObject::CheckSide(const Ray& ray, const Vector<>& t1, const Vector<>& t2) const
 {
     Vector<> v1 = t1 - ray.origin;
     Vector<> v2 = t2 - ray.origin;
     Vector<> n1 = (v2 * v1).normalize();
-    if(ray.direction.dotProduct(n1)<=0)
+    if(ray.direction.normalize().dotProduct(n1)<=0)
     {
         return false;
     }
@@ -22,20 +22,20 @@ bool TriangleFaceObject::CheckSide(const Ray& ray, const Vector<>& t1, const Vec
     }
     return true;
 }
-bool TriangleFaceObject::CheckIfHitsTris(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const
+bool MeshObject::CheckIfHitsTris(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const
 {
     return (CheckSide(ray,v1,v2) && CheckSide(ray,v2,v3) && CheckSide(ray,v3,v1));
 }
-Hit TriangleFaceObject::CalculateDistance(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3, const Material& mat) const
+Hit MeshObject::CalculateDistance(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3, const Material& mat) const
 {
     Vector<> normal = CalculateNormal(ray,v1,v2,v3);
     double d = - v2.dotProduct(normal);
     double t = - (ray.origin.dotProduct(normal)+d)/(ray.direction.dotProduct(normal));
-    Vector<> p = ray.origin + (ray.direction * t);
+    Vector<> p = ray.origin + (ray.direction.normalize() * t);
     return Hit{t,normal,p,mat};
 }
 
-Hit TriangleFaceObject::CheckHit(const Ray& ray) const
+Hit MeshObject::CheckHit(const Ray& ray) const
 {
     Hit min_dist = Hit{INF};
     for(unsigned int j=0; j < obj.getFaceCount(); ++j)
@@ -56,7 +56,7 @@ Hit TriangleFaceObject::CheckHit(const Ray& ray) const
     return min_dist;
 }
 
-bool TriangleFaceObject::CheckIfHits(const Ray& ray) const
+bool MeshObject::CheckIfHits(const Ray& ray) const
 {
     for(unsigned int j=0; j < obj.getFaceCount(); ++j)
     {
@@ -76,7 +76,7 @@ Hit SphereObject::CheckHit(const Ray& ray) const
 {
     Vector<> Q = ray.origin - position;
     double a = 1;
-    double b = 2*Q.dotProduct(ray.direction);
+    double b = 2*Q.dotProduct(ray.direction.normalize());
     double c = Q.squareMagnitude() - pow(radius,2);
     double delta = pow(b,2) - (4*a*c);
     double t = INF;
@@ -93,7 +93,7 @@ Hit SphereObject::CheckHit(const Ray& ray) const
         t2 = (t2>MIN)?t2:INF;
         t = std::min(t1,t2);
     }
-    Vector<> p = ray.origin + (ray.direction * t);
+    Vector<> p = ray.origin + (ray.direction.normalize() * t);
     Vector<> normal = (p-position).normalize();
     return Hit{t,normal,p,mat};
 }
@@ -102,7 +102,7 @@ bool SphereObject::CheckIfHits(const Ray& ray) const
 {
     Vector<> Q = ray.origin - position;
     double a = 1;
-    double b = 2*Q.dotProduct(ray.direction);
+    double b = 2*Q.dotProduct(ray.direction.normalize());
     double c = Q.squareMagnitude() - pow(radius,2);
     double delta = pow(b,2) - (4*a*c);
     double t = INF;
@@ -122,13 +122,29 @@ bool SphereObject::CheckIfHits(const Ray& ray) const
     return (t>MIN && t<INF);
 }
 
+Hit PlaneObject::CheckHit(const Ray& ray) const
+{
+    double d = - position.dotProduct(normal);
+    double t = - (ray.origin.dotProduct(normal)+d)/(ray.direction.dotProduct(normal));
+    Vector<> p = ray.origin + (ray.direction * t);
+    return Hit{t,normal,p,mat};
+}
+
+bool PlaneObject::CheckIfHits(const Ray& ray) const
+{
+    double d = - position.dotProduct(normal);
+    double t = - (ray.origin.dotProduct(normal)+d)/(ray.direction.dotProduct(normal));
+    return t>MIN;
+}
+
 bool Scene::isLighted(const Vector<>& pos, const Light& light) const
 {
-    Hit min_t = Hit{INF};
+    Hit min_t = Hit{light.getDistance(pos)};
     for(unsigned int i=0; i < objects.size(); ++i)
     {
         const SceneObject* current = objects[i];
-        if(current->CheckIfHits(Ray(pos,-light.getDirection(pos))))
+        Hit hit = current->CheckHit(Ray(pos,-(light.getDirection(pos)).normalize()));
+        if(hit.dist > MIN && hit < min_t)
         {
             return false;
         }

@@ -29,11 +29,12 @@ private:
             if(scene.isLighted(hit.pos, scene.getLight(i)))
             {
                 const Vector<> lightDir = scene.getLight(i).getDirection(hit.pos);
-                const Vector<> h = (ray.direction + lightDir).normalize();
-                diff = (std::max(0.,lightDir.dotProduct(-hit.normal)) * scene.getLight(i).getIntensity());
+                double lightIntensity = scene.getLight(i).getIntensity() * lightDir.magnitude();
+                const Vector<> h = (ray.direction.normalize() + lightDir.normalize()).normalize();
+                diff = (std::max(0.,lightDir.dotProduct(-hit.normal)) * lightIntensity);
                 diff = std::min(diff, 1.0);
                 double nh = std::max(0.,h.dotProduct(-hit.normal));
-                spec = (std::pow(nh, 48.0) * scene.getLight(i).getIntensity());
+                spec = (std::pow(nh, 48.0) * lightIntensity);
             }
             diffColor += (diff * scene.getLight(i).getColor());
             specColor += (hit.mat.spec * scene.getLight(i).getColor() * spec);

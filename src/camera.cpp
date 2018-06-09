@@ -4,8 +4,10 @@
 
 Camera::Camera(const JiMP2::BMP& b, const Vector<>& pos, const Vector<>& f, const Vector<>& u, double dist, double _size): bmp(b), origin(pos), forward(f), up(u), planeDist(dist), size(_size)
 {
+    forward = forward.normalize();
+    up = up.normalize();
     position = origin + (forward.normalize()*planeDist);
-    right = forward * up;
+    right = (forward * up).normalize();
 }
 
 Ray Camera::ConstructRay(int x, int y) const

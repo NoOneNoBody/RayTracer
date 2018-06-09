@@ -24,14 +24,8 @@ struct Hit
     Vector<> normal;
     Vector<> pos;
     Material mat;
-    bool operator<(const Hit& hit) const
-    {
-        return dist<hit.dist;
-    }
-    bool operator>(const Hit& hit) const
-    {
-        return dist>hit.dist;
-    }
+    bool operator<(const Hit& hit) const {return dist<hit.dist;}
+    bool operator>(const Hit& hit) const {return dist>hit.dist;}
 };
 
 class Light
@@ -41,6 +35,7 @@ public:
     virtual Vector<> getDirection(const Vector<>& pos) const = 0;
     virtual double getIntensity() const = 0;
     virtual Color getColor() const = 0;
+    virtual double getDistance(const Vector<>& pos) const = 0;
 };
 
 class DirectionalLight : public Light
@@ -51,9 +46,10 @@ private:
     Color color;
 public:
     DirectionalLight(Vector<> d, double i, Color c): direction(d), intensity(i), color(c){}
-    Vector<> getDirection(const Vector<>& pos) const {return direction;}
+    Vector<> getDirection(const Vector<>& pos) const {return direction.normalize();}
     double getIntensity() const {return intensity;}
     Color getColor() const {return color;}
+    double getDistance(const Vector<>& pos) const {return INF;}
 };
 
 class PointLight : public Light
@@ -61,12 +57,18 @@ class PointLight : public Light
 private:
     Vector<> position;
     double intensity;
+    double range;
     Color color;
 public:
-    PointLight(Vector<> p, double i, Color c): position(p), intensity(i), color(c){}
-    Vector<> getDirection(const Vector<>& pos) const {return ((pos-position).normalize());}
+    PointLight(Vector<> p, double i, double r, Color c): position(p), intensity(i), range(r), color(c){}
+    Vector<> getDirection(const Vector<>& pos) const
+    {
+        Vector<> dist = (pos-position);
+        return (dist.normalize()*(std::max(0.,(range - dist.magnitude()))/range));
+    }
     double getIntensity() const {return intensity;}
     Color getColor() const {return color;}
+    double getDistance(const Vector<>& pos) const {return (pos-position).magnitude();}
 };
 
 class SceneObject
@@ -78,7 +80,7 @@ public:
     virtual ~SceneObject(){}
 };
 
-class TriangleFaceObject: public SceneObject
+class MeshObject: public SceneObject
 {
 private:
     const Object& obj;
@@ -90,9 +92,9 @@ private:
     bool CheckIfHitsTris(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const;
     Hit CalculateDistance(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3, const Material& mat) const;
 public:
-    TriangleFaceObject(const Object& o): obj(o), scale(1){}
-    TriangleFaceObject(const Object& o, const Vector<double>& offs, double s, Material m = Material()): obj(o), offset(offs), scale(s), mat(m){}
-    Vector<> getVertexWorldPos(unsigned int index) const { return ((obj.getVertex(index).toVector()*scale)+offset);}
+    MeshObject(const Object& o): obj(o), scale(1){}
+    MeshObject(const Object& o, const Vector<double>& offs, double s, Material m = Material()): obj(o), offset(offs), scale(s), mat(m){}
+    Vector<> getVertexWorldPos(unsigned int index) const {return ((obj.getVertex(index).toVector()*scale)+offset);}
     Hit CheckHit(const Ray& ray) const;
     bool CheckIfHits(const Ray& ray) const;
 };
@@ -106,19 +108,8 @@ private:
 public:
     PlaneObject(): position(), normal(Vector<>(0,1,0)), mat(){}
     PlaneObject(const Vector<>& pos, const Vector<>& norm,const Material& m = Material()): position(pos), normal(norm), mat(m){}
-    Hit CheckHit(const Ray& ray) const
-    {
-        double d = - position.dotProduct(normal);
-        double t = - (ray.origin.dotProduct(normal)+d)/(ray.direction.dotProduct(normal));
-        Vector<> p = ray.origin + (ray.direction * t);
-        return Hit{t,normal,p,mat};
-    }
-    bool CheckIfHits(const Ray& ray) const
-    {
-        double d = - position.dotProduct(normal);
-        double t = - (ray.origin.dotProduct(normal)+d)/(ray.direction.dotProduct(normal));
-        return t>MIN;
-    }
+    Hit CheckHit(const Ray& ray) const;
+    bool CheckIfHits(const Ray& ray) const;
 };
 
 class SphereObject: public SceneObject
