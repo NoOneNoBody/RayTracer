@@ -1,5 +1,5 @@
 //Wykonal Michal Warzecha I rok WEAIiB grupa 5b
-#include "camera.h"
+#include "../include/camera.h"
 
 
 Camera::Camera(const JiMP2::BMP& b, const Vector<>& pos, const Vector<>& f, const Vector<>& u, double dist, double _size): bmp(b), origin(pos), forward(f), up(u), planeDist(dist), size(_size)

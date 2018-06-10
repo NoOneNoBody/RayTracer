@@ -1,7 +1,7 @@
 //Wykonal Michal Warzecha Informatyka EAIiIB grupa 5b
 #include <iostream>
 #include <fstream>
-#include "tracer.h"
+#include "include/tracer.h"
 
 void saveBmp(const JiMP2::BMP& bmp,const char* path)
 {

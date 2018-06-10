@@ -5,8 +5,8 @@
 #include <cstring>
 #include <sstream>
 #include <cmath>
-#include "obj.h"
-#include "exceptions.h"
+#include "../include/obj.h"
+#include "../include/exceptions.h"
 
 void Object::loadFromFile(const char* path)
 {

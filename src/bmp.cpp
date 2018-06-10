@@ -1,5 +1,5 @@
 //Wykonal Michal Warzecha I rok WEAIiB grupa 5b
-#include "bmp.h"
+#include "../include/bmp.h"
 #include <iostream>
 #include <cassert>
 #include <fstream>

@@ -1,5 +1,5 @@
 //Wykonal Michal Warzecha I rok WEAIiB grupa 5b
-#include "scene.h"
+#include "../include/scene.h"
 
 Vector<> MeshObject::CalculateNormal(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const
 {
