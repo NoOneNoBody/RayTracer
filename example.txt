@@ -9,6 +9,7 @@ B  0 200 255
 #Światło punktowe: 
 #  pozycja,     intensywność, zasięg, kolor
 LP -50 50 200   1             1000    255 255 255
+#
 #Światło kierunkowe(globalne): 
 #  kierunek,  intensywność, kolor
 LD -1 -1 1    1             255 255 255
