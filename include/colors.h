@@ -7,7 +7,7 @@
 class Color
 {
 private:
-    Color fixColor()
+    void fixColor()
     {
         if(rgb.getX()>255){rgb.setX(255);}
         if(rgb.getY()>255){rgb.setY(255);}

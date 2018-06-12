@@ -38,9 +38,9 @@ Hit MeshObject::CalculateDistance(const Ray& ray, const Vector<>& v1, const Vect
 Hit MeshObject::CheckHit(const Ray& ray) const
 {
     Hit min_dist = Hit{INF};
-    for(unsigned int j=0; j < obj.getFaceCount(); ++j)
+    for(unsigned int j=0; j < obj->getFaceCount(); ++j)
     {
-        Face currentFace = obj.getFace(j);
+        Face currentFace = obj->getFace(j);
         Vector<> v1 = getVertexWorldPos(currentFace.getV1()-1);
         Vector<> v2 = getVertexWorldPos(currentFace.getV2()-1);
         Vector<> v3 = getVertexWorldPos(currentFace.getV3()-1);
@@ -58,9 +58,9 @@ Hit MeshObject::CheckHit(const Ray& ray) const
 
 bool MeshObject::CheckIfHits(const Ray& ray) const
 {
-    for(unsigned int j=0; j < obj.getFaceCount(); ++j)
+    for(unsigned int j=0; j < obj->getFaceCount(); ++j)
     {
-        Face currentFace = obj.getFace(j);
+        Face currentFace = obj->getFace(j);
         Vector<> v1 = getVertexWorldPos(currentFace.getV1()-1);
         Vector<> v2 = getVertexWorldPos(currentFace.getV2()-1);
         Vector<> v3 = getVertexWorldPos(currentFace.getV3()-1);

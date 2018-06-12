@@ -37,6 +37,7 @@ private:
     std::vector<Face> faces;
 public:
     Object(){}
+    Object(const Object& o): verts(o.verts), faces(o.faces){}
     Vertex getVertex(unsigned int index) const;
     Face getFace(unsigned int index) const;
     int getVertCount() const{return verts.size();}

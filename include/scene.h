@@ -83,7 +83,7 @@ public:
 class MeshObject: public SceneObject
 {
 private:
-    const Object& obj;
+    const Object* obj;
     Vector<> offset;
     double scale;
     Material mat;
@@ -92,9 +92,11 @@ private:
     bool CheckIfHitsTris(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3) const;
     Hit CalculateDistance(const Ray& ray, const Vector<>& v1, const Vector<>& v2, const Vector<>& v3, const Material& mat) const;
 public:
-    MeshObject(const Object& o): obj(o), scale(1){}
-    MeshObject(const Object& o, const Vector<double>& offs, double s, Material m = Material()): obj(o), offset(offs), scale(s), mat(m){}
-    Vector<> getVertexWorldPos(unsigned int index) const {return ((obj.getVertex(index).toVector()*scale)+offset);}
+    MeshObject(const Object& o): obj(&o), scale(1){}
+    MeshObject(const Object* o): obj(o), scale(1){}
+    MeshObject(const Object& o, const Vector<double>& offs, double s, Material m = Material()): obj(&o), offset(offs), scale(s), mat(m){}
+    MeshObject(const Object* o, const Vector<double>& offs, double s, Material m = Material()): obj(o), offset(offs), scale(s), mat(m){}
+    Vector<> getVertexWorldPos(unsigned int index) const {return ((obj->getVertex(index).toVector()*scale)+offset);}
     Hit CheckHit(const Ray& ray) const;
     bool CheckIfHits(const Ray& ray) const;
 };
@@ -140,7 +142,9 @@ public:
     void setBackground(Color col){background = col;}
     Color getBackground() const {return background;}
     void addObject(const SceneObject& ob){objects.push_back(&ob);}
+    void addObject(const SceneObject* ob){objects.push_back(ob);}
     void addLight(const Light& l){lights.push_back(&l);}
+    void addLight(const Light* l){lights.push_back(l);}
     void pop_backObj(){objects.pop_back();}
     const SceneObject* getObject(const size_t& i) const {return objects[i];}
     size_t getLightCount() const {return lights.size();}

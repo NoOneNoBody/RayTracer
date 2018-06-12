@@ -17,7 +17,10 @@ private:
     Vector<> up;
     Vector<> origin;
 public:
-    Camera(const JiMP2::BMP& b, const Vector<>& pos, const Vector<>& f, const Vector<>& u, double dist = 1, double _size = 1);
+    Camera(const JiMP2::BMP& b);
+    Camera(const JiMP2::BMP& b, const Vector<>& pos, const Vector<>& f, const Vector<>& u, double dist = 0.5, double _size = 0.001);
+    Camera(const Camera& c);
+    void setCamera(const Vector<>& pos, const Vector<>& f, const Vector<>& u, double dist = 0.5, double _size = 0.001);
     Ray ConstructRay(int x, int y) const;
     virtual ~Camera(){}
 };
