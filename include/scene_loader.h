@@ -18,7 +18,7 @@ class SceneLoader
     protected:
 
     private:
-        void getNextLine(std::ifstream& inputStream, std::istringstream& iss, std::string& command, unsigned int& lineCounter) const;
+        void getNextLine(std::istringstream& iss, std::string& command, std::string& line, unsigned int& lineCounter) const;
         void setCamera(std::istringstream& iss, Camera& cam, const unsigned int& lineCounter) const;
         void setBackground(std::istringstream& iss, Scene& scene, const unsigned int& lineCounter) const;
         void addSphere(std::istringstream& iss, Scene& scene, const unsigned int& lineCounter) const;
