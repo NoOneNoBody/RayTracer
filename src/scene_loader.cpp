@@ -16,7 +16,7 @@ void SceneLoader::setCamera(std::istringstream& iss, Camera& cam, const unsigned
     double v[11];
     int i = 0;
     char tmp;
-    for(i;i<11&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<11&&(iss>>v[i]);++i);
     if(i==11 && !(iss >> tmp))
     {
         cam.setCamera(Vector<>(v[0],v[1],v[2]), Vector<>(v[3],v[4],v[5]), Vector<>(v[6],v[7],v[8]), v[9], v[10]);
@@ -32,7 +32,7 @@ void SceneLoader::setBackground(std::istringstream& iss, Scene& scene, const uns
     double v[3];
     int i = 0;
     char tmp;
-    for(i;i<3&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<3&&(iss>>v[i]);++i);
     if(i==3 && !(iss >> tmp))
     {
         scene.setBackground(Color(v[0],v[1],v[2]));
@@ -48,7 +48,7 @@ void SceneLoader::addSphere(std::istringstream& iss, Scene& scene, const unsigne
     double v[9];
     int i = 0;
     char tmp;
-    for(i;i<9&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<9&&(iss>>v[i]);++i);
     if(i==9 && !(iss >> tmp))
     {
         scene.addObject(new SphereObject(Vector<>(v[0],v[1],v[2]), v[3], Material(Color(v[4],v[5],v[6]), v[7], v[8])));
@@ -64,7 +64,7 @@ void SceneLoader::addPlane(std::istringstream& iss, Scene& scene, const unsigned
     double v[11];
     int i = 0;
     char tmp;
-    for(i;i<11&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<11&&(iss>>v[i]);++i);
     if(i==11 && !(iss >> tmp))
     {
         scene.addObject(new PlaneObject(Vector<>(v[0],v[1],v[2]), Vector<>(v[3],v[4],v[5]), Material(Color(v[6],v[7],v[8]), v[9], v[10])));
@@ -82,7 +82,7 @@ void SceneLoader::addObject(std::istringstream& iss, Scene& scene, const unsigne
     double v[9];
     int i = 0;
     char tmp;
-    for(i;i<9&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<9&&(iss>>v[i]);++i);
     if(i==9 && !(iss >> tmp))
     {
         Object obj;
@@ -108,7 +108,7 @@ void SceneLoader::addLightP(std::istringstream& iss, Scene& scene, const unsigne
     double v[8];
     int i = 0;
     char tmp;
-    for(i;i<8&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<8&&(iss>>v[i]);++i);
     if(i==8 && !(iss >> tmp))
     {
         scene.addLight(new PointLight(Vector<>(v[0],v[1],v[2]), v[3], v[4], Color(v[5],v[6],v[7])));
@@ -124,7 +124,7 @@ void SceneLoader::addLightD(std::istringstream& iss, Scene& scene, const unsigne
     double v[7];
     int i = 0;
     char tmp;
-    for(i;i<7&&!iss.eof();++i){iss>>v[i];}
+    for(i;i<7&&(iss>>v[i]);++i);
     if(i==7 && !(iss >> tmp))
     {
         scene.addLight(new DirectionalLight(Vector<>(v[0],v[1],v[2]), v[3], Color(v[4],v[5],v[6])));

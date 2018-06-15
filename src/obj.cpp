@@ -17,10 +17,10 @@ void Object::loadFromFile(const char* path)
     std::string textLine;
     std::istringstream iss;
     std::string command;
+    std::string dump;
     myObjFile.open(path);
     if (myObjFile.is_open()) {
-        while (!myObjFile.eof()) {
-            std::getline(myObjFile, textLine);
+        while (std::getline(myObjFile, textLine)) {
             iss.clear();
             iss.str(textLine);
             command = std::string();
@@ -34,8 +34,8 @@ void Object::loadFromFile(const char* path)
                     {
                         double v[3];
                         int i=0;
-                        for(i;i<3&&!iss.eof();++i){iss>>v[i];}
-                        if(i==3 && iss.eof())
+                        for(i;i<3&&(iss>>v[i]);++i);
+                        if(i==3 && !(iss >> dump))
                         {
                             this->verts.push_back(Vertex(v[0],v[1],v[2]));
                         }
@@ -57,8 +57,8 @@ void Object::loadFromFile(const char* path)
                         unsigned int v[3];
                         std::string garbage;
                         int i=0;
-                        for(i;i<3&&!iss.eof();++i){iss>>v[i];}
-                        if(i==3 && iss.eof())
+                        for(i;i<3&&(iss>>v[i]);++i);
+                        if(i==3 && !(iss >> dump))
                         {
                             this->faces.push_back(Face(v[0],v[1],v[2]));
                         }
