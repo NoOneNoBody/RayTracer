@@ -1,4 +1,4 @@
-#include "tracer.h"
+#include "../include/tracer.h"
 
 Color Tracer::CalculateLight(const Ray& ray, const Hit& hit, const Scene& scene) const
 {
