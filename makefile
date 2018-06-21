@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -std=c++11
-OBJECTS = main.o bmp.o camera.o obj.o scene.o scene_loader.o
+OBJECTS = main.o bmp.o camera.o obj.o scene.o scene_loader.o tracer.o
 
 all: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@
