@@ -45,7 +45,7 @@ Color Tracer::CalculateColor(const Ray& ray, const Hit& hit, const Scene& scene,
     }
 }
 
-Color Tracer::FindIntersections(const Ray& ray, const Scene& scene, unsigned int iteration = 0) const
+Color Tracer::FindIntersections(const Ray& ray, const Scene& scene, unsigned int iteration) const
 {
     Hit min_t = Hit{INF};
     for(unsigned int i=0; i < scene.getCount(); ++i)
