@@ -1,6 +1,6 @@
 # RayTracer
 
-Michał Warzecha WEAIiIB Informatyka rok I grupa 5
+Project for a subject in the second semester.
 
 ![alt text](https://github.com/NoOneNoBody/RayTracer/blob/master/out1_21.bmp)
 
